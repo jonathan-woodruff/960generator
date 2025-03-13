@@ -2,25 +2,30 @@
 const generateButton = document.getElementById('generate-button');
 
 const placePieceRandomly = (availableSlots, selectedPositions, pieceStr) => {
-    let randomIndex = Math.floor(Math.random() * availableSlots.length);
+    const randomIndex = Math.floor(Math.random() * availableSlots.length);
     selectedPositions[availableSlots[randomIndex]] = pieceStr;
     availableSlots.splice(randomIndex, 1);
-    return [availableSlots, selectedPositions];
+    console.log(randomIndex);
+    console.log(selectedPositions);
+    console.log(availableSlots);
+    return [availableSlots, selectedPositions, randomIndex];
 };
 
-const placeBishop2 = (availableSlots, selectedPositions) => {
+const placeBishop2 = (availableSlots, selectedPositions, bishop1Index) => {
     //The other bishop must be placed on an different-colored square as the first bishop
-    const bishop1Position = selectedPositions[0];
     let bishop2AvailableSlots;
-    if (bishop1Position === 1 || bishop1Position === 3 || bishop1Position === 5 || bishop1Position === 7) {
-        bishop2AvailableSlots = [2, 4, 6, 8]
+    if (bishop1Index === 1 || bishop1Index === 3 || bishop1Index === 5 || bishop1Index === 7) {
+        bishop2AvailableSlots = [0, 2, 4, 6]
     } else {
-        bishop2AvailablleSlots = [1, 3, 5, 7]
+        bishop2AvailableSlots = [1, 3, 5, 7]
     }
     let randomIndex = Math.floor(Math.random() * 4);
     const bishop2Position = bishop2AvailableSlots[randomIndex];
+    console.log(bishop2Position);
+    console.log(selectedPositions);
+    console.log(availableSlots);
     selectedPositions[bishop2Position] = "B";
-    availableSlots.splice(availableSlots.findIndex(bishop2Position), 1);
+    availableSlots.splice(availableSlots.findIndex((position) => position === bishop2Position), 1);
     return [availableSlots, selectedPositions];
 };
 
@@ -36,8 +41,9 @@ const placeRooksAndKing = (availableSlots, selectedPositions) => {
 const doSetup = () => {
     let availableSlots = [0, 1, 2, 3, 4, 5, 6, 7];
     let selectedPositions = ["", "", "", "", "", "", "", ""];
-    [availableSlots, selectedPositions] = placePieceRandomly(availableSlots, selectedPositions, "B"); //bishop 1
-    [availableSlots, selectedPositions] = placeBishop2(availableSlots, selectedPositions); //bishop 2
+    let randomIndex;
+    [availableSlots, selectedPositions, bishop1Index] = placePieceRandomly(availableSlots, selectedPositions, "B"); //bishop 1
+    [availableSlots, selectedPositions] = placeBishop2(availableSlots, selectedPositions, bishop1Index); //bishop 2
     [availableSlots, selectedPositions] = placePieceRandomly(availableSlots, selectedPositions, "N"); //knight 1
     [availableSlots, selectedPositions] = placePieceRandomly(availableSlots, selectedPositions, "N"); //knight 2
     [availableSlots, selectedPositions] = placePieceRandomly(availableSlots, selectedPositions, "Q"); //Queen
@@ -62,3 +68,5 @@ const doSetup = () => {
 };
 
 generateButton.addEventListener('click', doSetup);
+
+doSetup();
